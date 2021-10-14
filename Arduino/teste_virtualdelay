@@ -1,0 +1,25 @@
+#include <avdweb_VirtualDelay.h>
+
+#define buzzerPino 8
+#define vibraPino 4
+
+VirtualDelay pausa, duracao;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(buzzerPino, OUTPUT);
+  pinMode(vibraPino, OUTPUT);
+}
+
+void loop() {
+pausa.start(2000);
+  if (pausa.elapsed()){
+    duracao.start(1000);
+    tone(buzzerPino,500);
+    digitalWrite(vibraPino,HIGH);
+    if (duracao.elapsed()){
+     noTone(buzzerPino); 
+     digitalWrite(vibraPino, LOW);
+     }
+   }
+}
