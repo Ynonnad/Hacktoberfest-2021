@@ -1,0 +1,19 @@
+import processing.serial.*;
+Serial meuSerial;
+PrintWriter output;
+
+void setup(){
+  String porta = Serial.list()[0];
+  meuSerial = new Serial(this, porta, 9600);
+  output = createWriter("data.csv");
+}
+
+void draw(){
+  if (meuSerial.available() > 0){
+    String valor = meuSerial.readStringUntil('\n');
+    if (valor!=null){
+      output.print(valor);
+      output.flush();
+    }
+  }
+}
