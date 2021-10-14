@@ -1,0 +1,80 @@
+#include <Keypad.h>
+
+int estado = 1;
+//estado 0 = não iniciado; estado 1 = peso; estado 1 = altura; estado 3 = imc; 
+String digitado;
+int imc;
+float peso;
+float alt;
+
+byte pinCol[] = {8,9,10,11};
+byte pinLin[] = {3,4,5,6};
+
+char teclas[4][4] = {{'1','2','3','a'},
+                     {'4','5','6','b'},
+                     {'7','8','9','c'},
+                     {'*','0','#','d'},};
+
+Keypad teclado = Keypad(makeKeymap(teclas),pinLin,pinCol,4,4);
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("Digite sua altura (cm, 3 digitos) e peso (kg, 2 digitos).");
+  Serial.println("Use # como enter");
+}
+
+void loop() {
+  char tecla = teclado.getKey(); 
+  Serial.print(tecla + " - ");
+  Serial.println(digitado);
+  
+  /*if (tecla != NO_KEY && estado == 0){
+    estado = 1;
+    Serial.println("Digite sua altura.");
+  }*/
+  
+  if (estado == 1){
+    /*while (digitado.length()==3 && tecla != '#'){
+    	Serial.println("Aperte enter (#).");
+    }*/
+    if (digitado.length()==3 && tecla == '#'){
+      alt = digitado.toFloat();
+      digitado = "";
+      estado = 2;
+      Serial.println("Digite seu peso.");
+    }
+  }
+  
+  else if (estado == 2){
+  	/*while (digitado.length()==2 && tecla != '#'){
+    	Serial.println("Aperte enter (#).");
+    }*/
+    if (digitado.length()==2 && tecla == '#'){
+      peso = digitado.toFloat();
+      digitado = "";
+      estado = 3;
+    }
+  }
+  
+  if (estado == 3){
+    alt = alt/100;
+    
+  	imc = peso/(alt*alt);
+    Serial.print("IMC: ");
+    Serial.println(imc);
+  
+  if (imc < 18.5){
+    Serial.println("Subpeso");
+  }
+  else if (imc > 18.5 && imc < 25){
+    Serial.println("Peso normal");
+  }
+  else if (imc > 25){
+    Serial.println("Sobrepeso");
+  }
+ }
+  else {
+  	digitado += tecla;
+  }
+  delay(200);
+}
